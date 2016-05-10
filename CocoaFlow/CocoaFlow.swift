@@ -9,28 +9,39 @@
 // TODO: add check for recursive mutate/update loop
 import Foundation
 
-/// Basic actions enum - to be extended.
-public enum FlowActions {
-    case Update;
-}
-
 /// Let the object listener to change of a source in a Flow store
 public protocol FlowListener {
     func update(values:Dictionary<String, AnyObject>)
 }
 
+public class FlowItem {
+    var name:String
+    init(name:String) {
+        self.name = name
+    }
+}
+
 /// Let the object work with the Flow system.
-public protocol FlowSource {
+public class FlowSource<T>:FlowItem {
+    /// list of possible mutation action.
+    var actions:Dictionary<String, (T) -> T > = Dictionary()
     
-    /// list of possible mutation action. Need to be extended
-    var actions:Dictionary<String, AnyObject> {get set}
+    /// the actual value
+    var val:T
+    
+    init(name:String, value:T) {
+        self.val = value
+        super.init(name: name)
+    }
     
     /**
      Interface to read and eventually compute a value
      
      - returns: requested optional value
      */
-    func read() -> AnyObject?
+    func read() -> T? {
+        return val
+    }
     
     /**
      Interface to mutate the value
@@ -39,66 +50,16 @@ public protocol FlowSource {
      - parameter value: the new value
      - parameter action: a FlowActions type enum.
      */
-    func mutate(value:AnyObject, action:String)
-}
-
-
-/// Listener object
-public class FlowL {
-    func listenerForString(str:String) {
+    func mutate(value:T, action:String) {
         
     }
 }
 
 /// Create a Flow store
 public class FlowDispatcher {
-    var sources: Dictionary<String, FlowSource> = Dictionary()
+    var sources: Dictionary<String, FlowItem> = Dictionary()
     var listeners: Dictionary<String, [FlowListener]> = Dictionary()
-    /**
-     Try to get all value from the list of key given
-     
-     - parameter keys: list of key you want go get from the store
-     
-     - returns: a list of keys with possible result
-     */
-    func read(keys:[String]) -> Dictionary<String, AnyObject?> {
-        var results:Dictionary<String, AnyObject> = Dictionary()
-        for key in keys {
-                results[key] = read(key)
-        }
-        return results
-    }
     
-    /**
-     Try to get the value for a key
-     
-     - parameter key: **key** you hope to get
-     
-     - returns: the possible result
-     */
-    func read(key: String) -> AnyObject? {
-        if let source = sources[key] {
-            return source.read()
-        }
-        return nil
-    }
-    
-    /**
-     Will update the key with the new value using the register action and then trigger the update method of all subscriber.
-     
-     - parameter key: key to be update
-     - parameter value: the value the mutater should get
-     */
-    func transact(key:String, value:AnyObject) {
-        let source:FlowSource = sources[key]!
-        let listenerList:[FlowListener] = listeners[key]!
-        source.mutate(value, action:"update")
-        if let v = read(key) {
-            for listener in listenerList {
-                listener.update([key:v])
-            }
-        }
-    }
     
     /**
      You can subscribe to the updates manually.
@@ -122,7 +83,7 @@ public class FlowDispatcher {
      - parameter source: original source object
      - parameter key: identifier
      */
-    func register(source:FlowSource, key:String) {
-        sources[key] = source;
+    func register(source:FlowItem) {
+        sources[source.name] = source;
     }
 }
