@@ -11,7 +11,7 @@ import Foundation
 
 /// Let the object listener to change of a source in a Flow store
 public protocol FlowListener {
-    func update(values:Dictionary<String, AnyObject>)
+    func update<T>(values:Dictionary<String, T>)
 }
 
 public class FlowItem {
