@@ -5,7 +5,11 @@ import UIKit
 
 var test = FlowDispatcher()
 
-class testa {
-    func a(v:Int)->Int {return v}
-    func b(v:String)->String {return v}
+/**
+ Change or add a value in a non mutable dictionary
+ */
+func updateDictionary<K, T>(dict:Dictionary<K, T>, key:K, value:T) -> Dictionary<K, T> {
+    var tmpDict = dict
+    tmpDict[key] = value
+    return tmpDict
 }
