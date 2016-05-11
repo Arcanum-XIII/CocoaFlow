@@ -25,14 +25,14 @@ public class FlowItem {
 /// Register a source (store) for the dispatcher
 public class FlowSource<T>:FlowItem {
     
-    /// list of possible mutation action.
-    var actions:Dictionary<String, (T) -> T > = Dictionary()
-    
     /// the actual value
-    var val:T
+    var value:T
+    
+    /// list of possible mutation action.
+    var actions:[String: (T) -> T] = Dictionary()
     
     init(name:String, value:T) {
-        self.val = value
+        self.value = value
         super.init(name: name)
     }
     
@@ -54,15 +54,14 @@ public class FlowSource<T>:FlowItem {
      - returns: requested optional value
      */
     func read() -> T? {
-        return val
+        return value
     }
     
     /**
      Interface to mutate the value
-     The FlowActions enum is used as the type of action the write value can execute, by default only the Update case exist. Of course an extension of this protocol can (and should be) used to extend the possibilities.
      */
-    func mutate(value:T, action:String) {
-        
+    func mutate(value:T, action:String) -> T {
+        return value
     }
 }
 
