@@ -10,11 +10,11 @@
 import Foundation
 
 /// Let the object listener to change of a source in a Flow store
-public protocol FlowListener {
+public protocol FlowListener: class {
     func update<T>(values:Dictionary<String, T>)
 }
 
-///
+/// Base class of a FlowSource, so we can add it to any dict or array.
 public class FlowItem {
     var name:String
     init(name:String) {
@@ -25,11 +25,11 @@ public class FlowItem {
 /// Register a source (store) for the dispatcher
 public class FlowSource<T>:FlowItem {
     
-    /// the actual value
+    /// container for the value
     var value:T
     
     /// list of possible mutation action.
-    var actions:[String: (T) -> T] = Dictionary()
+    var actions:[String: (T, T) -> T] = Dictionary()
     
     init(name:String, value:T) {
         self.value = value
@@ -61,6 +61,9 @@ public class FlowSource<T>:FlowItem {
      Interface to mutate the value
      */
     func mutate(value:T, action:String) -> T {
+        if let method = actions[action] {
+            self.value = method(value, self.value)
+        }
         return value
     }
 }
@@ -76,6 +79,9 @@ public class FlowDispatcher {
     
     /// Unsubscribe a listener.
     func unsubscribe(key:String, listener:FlowListener) {
+        if let listenerList = listeners[key] {
+            listeners[key] = listenerList.filter {$0 !== listener}
+        }
     }
     
     /**
@@ -88,4 +94,7 @@ public class FlowDispatcher {
     /**
      Remove a data source
     */
+    func unregister(name:String) {
+        sources.removeValueForKey(name)
+    }
 }
