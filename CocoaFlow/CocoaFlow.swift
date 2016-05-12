@@ -97,4 +97,12 @@ public class FlowDispatcher {
     func unregister(name:String) {
         sources.removeValueForKey(name)
     }
+    
+    func read<T>(name:String) -> T?{
+        if let object = sources[name] {
+            let source = object as! FlowSource<T>
+            return source.read()
+        }
+        return nil
+    }
 }
