@@ -17,17 +17,10 @@ public class FlowItem {
     }
 }
 
-/// allow object to register listener closure to be called upond change on a source
-public class FlowListener<T>:FlowItem {
-    let update:(T) -> Void
-    init (name:String, updateFunction:(T) -> Void) {
-        self.update = updateFunction
-        super.init(name: name)
-    }
-}
-
 /// Register a source (store) for the dispatcher
 public class FlowSource<T>:FlowItem {
+    /// listener closure with their uuid
+    var listener:Dictionary<String, (T) -> Void> = Dictionary()
     
     /// container for the value
     var value:T
@@ -50,6 +43,16 @@ public class FlowSource<T>:FlowItem {
             (key:String, _) -> String in
                 return key
         })
+    }
+    
+    /** 
+     Will add a closure listener that will be triggered on transaction
+     - returns: UUID of the closure
+    */
+    func addListener(action:(T) -> Void) -> String {
+        let uuid = NSUUID().UUIDString
+        listener[uuid] = action
+        return uuid
     }
     
     /**
@@ -75,17 +78,23 @@ public class FlowSource<T>:FlowItem {
 /// Create a dispatcher
 public class FlowDispatcher {
     var sources: Dictionary<String, FlowItem> = Dictionary()
-    var listeners: Dictionary<String, [FlowItem]> = Dictionary()
     
-    func subscribe(listener:FlowItem) {
-        listeners[listener.name]?.append(listener)
+    func subscribe<T>(sourceName:String, action:(T) -> Void) -> String? {
+        if let object = sources[sourceName] {
+            let source = object as! FlowSource<T>
+            return source.addListener(action)
+        }
+        return nil
     }
     
     /// Unsubscribe a listener.
-    func unsubscribe(listener:FlowItem) {
-        if let listenerList = listeners[listener.name] {
-            listeners[listener.name] = listenerList.filter {$0 !== listener}
+    func unsubscribe<T>(sourceName:String, uuid:String) -> T? {
+        if let object = sources[sourceName] {
+            let source = object as! FlowSource<T>
+            source.actions.removeValueForKey(uuid)
+            return source.read()
         }
+        return nil
     }
     
     /**
@@ -109,4 +118,20 @@ public class FlowDispatcher {
         }
         return nil
     }
+    
+    /* Need to be pushed into the source
+    func transact<T:Comparable>(source:String, withAction:String, forValue:T) -> T? {
+        if let object = sources[source] {
+            let store = object as! FlowSource<T>
+            let oldValue = store.read()
+            let result = store.mutate(forValue, action: withAction)
+            if let old = oldValue {
+                if (old != result) {
+                    
+                }
+            }
+            return result
+        }
+        return nil
+    }*/
 }
