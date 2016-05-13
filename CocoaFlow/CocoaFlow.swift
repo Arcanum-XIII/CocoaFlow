@@ -9,16 +9,20 @@
 // TODO: add check for recursive mutate/update loop
 import Foundation
 
-/// Let the object listener to change of a source in a Flow store
-public protocol FlowListener: class {
-    func update<T>(values:Dictionary<String, T>)
-}
-
-/// Base class of a FlowSource, so we can add it to any dict or array.
+/// Base class, so we can add it to any dict or array.
 public class FlowItem {
     var name:String
     init(name:String) {
         self.name = name
+    }
+}
+
+/// allow object to register listener closure to be called upond change on a source
+public class FlowListener<T>:FlowItem {
+    let update:(T) -> Void
+    init (name:String, updateFunction:(T) -> Void) {
+        self.update = updateFunction
+        super.init(name: name)
     }
 }
 
@@ -71,16 +75,16 @@ public class FlowSource<T>:FlowItem {
 /// Create a dispatcher
 public class FlowDispatcher {
     var sources: Dictionary<String, FlowItem> = Dictionary()
-    var listeners: Dictionary<String, [FlowListener]> = Dictionary()
+    var listeners: Dictionary<String, [FlowItem]> = Dictionary()
     
-    func subscribe(key:String, listener:FlowListener) {
-        listeners[key]?.append(listener)
+    func subscribe(listener:FlowItem) {
+        listeners[listener.name]?.append(listener)
     }
     
     /// Unsubscribe a listener.
-    func unsubscribe(key:String, listener:FlowListener) {
-        if let listenerList = listeners[key] {
-            listeners[key] = listenerList.filter {$0 !== listener}
+    func unsubscribe(listener:FlowItem) {
+        if let listenerList = listeners[listener.name] {
+            listeners[listener.name] = listenerList.filter {$0 !== listener}
         }
     }
     
