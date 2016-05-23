@@ -18,13 +18,13 @@ public class FlowItem {
 }
 
 protocol FlowListener {
-    func removeListener(uuid:String)
+    func removeListener(uuid:NSUUID)
 }
 
 /// Register a source (store) for the dispatcher
 public class FlowSource<T:Comparable>:FlowItem, FlowListener {
     /// listener closure with their uuid
-    var listener:Dictionary<String, (T) -> Void> = Dictionary()
+    var listener:Dictionary<NSUUID, (T) -> Void> = Dictionary()
     
     /// container for the value
     var value:T
@@ -54,14 +54,14 @@ public class FlowSource<T:Comparable>:FlowItem, FlowListener {
      
      - returns: UUID of the closure
     */
-    func addListener(action:(T) -> Void) -> String {
-        let uuid = NSUUID().UUIDString
+    func addListener(action:(T) -> Void) -> NSUUID {
+        let uuid = NSUUID()
         listener[uuid] = action
         return uuid
     }
     
     /// remove a listener
-    func removeListener(uuid:String) {
+    func removeListener(uuid:NSUUID) {
         listener.removeValueForKey(uuid)
     }
     
@@ -95,7 +95,7 @@ public class FlowSource<T:Comparable>:FlowItem, FlowListener {
 public class FlowDispatcher {
     var sources: Dictionary<String, FlowItem> = Dictionary()
     
-    func subscribe<T:Comparable>(sourceName:String, action:(T) -> Void) -> String? {
+    func subscribe<T:Comparable>(sourceName:String, action:(T) -> Void) -> NSUUID? {
         if let object = sources[sourceName] {
             let source = object as! FlowSource<T>
             return source.addListener(action)
@@ -104,7 +104,7 @@ public class FlowDispatcher {
     }
     
     /// Unsubscribe a listener.
-    func unsubscribe(sourceName:String, uuid:String) {
+    func unsubscribe(sourceName:String, uuid:NSUUID) {
         let t = sources[sourceName] as! FlowListener
         t.removeListener(uuid)
     }
