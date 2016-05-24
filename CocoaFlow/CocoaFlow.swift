@@ -10,7 +10,6 @@
 import Foundation
 
 class Item {
-    func removeListener(uuid:NSUUID) {}
 }
 
 /// Usable source (store) for the dispatcher
@@ -66,19 +65,12 @@ class Source<T>:Item {
 public class FlowDispatcher {
     var sources: Dictionary<String, Item> = Dictionary()
     
-    func subscribe<T:Comparable>(sourceName:String, action:(T) -> Void) -> (() -> Void)? {
+    func subscribe<T>(sourceName:String, action:(T) -> Void) -> (() -> Void)? {
         if let object = sources[sourceName] {
             let source = object as! Source<T>
             return source.listen(action)
         }
         return nil
-    }
-    
-    /// Unsubscribe a listener.
-    func unsubscribe(sourceName:String, uuid:NSUUID) {
-        if let t = sources[sourceName] {
-            t.removeListener(uuid)
-        }
     }
     
     /**
