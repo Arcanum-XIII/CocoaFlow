@@ -9,95 +9,66 @@
 // TODO: add check for recursive mutate/update loop
 import Foundation
 
-/// Base class, so we can add it to any dict or array.
-public class FlowItem {
-    var name:String
-    init(name:String) {
-        self.name = name
-    }
+class Item {
+    func removeListener(uuid:NSUUID) {}
 }
 
-protocol FlowListener {
-    func removeListener(uuid:NSUUID)
-}
-
-/// Register a source (store) for the dispatcher
-public class FlowSource<T:Comparable>:FlowItem, FlowListener {
-    /// listener closure with their uuid
-    var listener:Dictionary<NSUUID, (T) -> Void> = Dictionary()
+/// Usable source (store) for the dispatcher
+class Source<T>:Item {
+    internal let actions:(String, T) -> T?
+    internal let readMethod:() -> T
+    var listeners:[NSUUID:(T) -> Void] = [:]
     
-    /// container for the value
-    var value:T
-    
-    /// list of possible mutation action.
-    var actions:[String: (T, T) -> T] = Dictionary()
-    
-    init(name:String, value:T) {
-        self.value = value
-        super.init(name: name)
+    // actions will be used in a closure that will handle the dispatching.
+    init(actionsList:[String:(T) -> T], read:() -> T) {
+        func evalAction(actionName:String, v:T) -> T? {
+            if let action = actionsList[actionName] {
+                return action(v)
+            }
+            return nil
+        }
+        self.actions = evalAction
+        self.readMethod = read
+        super.init()
     }
     
-    /** 
-     List the possible action for a source
-     
-     - returns: the possible list of action
-    */
-    func actionsList() -> [String] {
-        return actions.map({
-            (key:String, _) -> String in
-                return key
-        })
+    // a transaction will notify listener that a new value is there
+    func transact(name:String, value:T) -> T? {
+        let result = actions(name, value)
+        if let r = result {
+            for (_ ,listener) in listeners {
+                listener(r)
+            }
+        }
+        return result
     }
     
-    /** 
+    /**
      Will add a closure listener that will be triggered on transaction
      
      - returns: UUID of the closure
-    */
+     */
     func addListener(action:(T) -> Void) -> NSUUID {
         let uuid = NSUUID()
-        listener[uuid] = action
+        listeners[uuid] = action
         return uuid
     }
     
     /// remove a listener
-    func removeListener(uuid:NSUUID) {
-        listener.removeValueForKey(uuid)
+    override func removeListener(uuid:NSUUID) {
+        listeners.removeValueForKey(uuid)
     }
     
-    /**
-     Interface to read and eventually compute a value
-     
-     - returns: requested optional value
-     */
-    func read() -> T? {
-        return value
-    }
-    
-    /**
-     Interface to mutate the value
-     */
-    func transact(action:String, forValue:T) -> T {
-        let oldValue = value
-        if let method = actions[action] {
-            self.value = method(forValue, self.value)
-            if(oldValue != value) {
-                for (_, method) in listener {
-                    method(self.value)
-                }
-            }
-        }
-        return self.value
-    }
+    func read() -> T { return self.readMethod() }
 }
 
 /// Create a dispatcher
 public class FlowDispatcher {
-    var sources: Dictionary<String, FlowItem> = Dictionary()
+    var sources: Dictionary<String, Item> = Dictionary()
     
     func subscribe<T:Comparable>(sourceName:String, action:(T) -> Void) -> NSUUID? {
         if let object = sources[sourceName] {
-            let source = object as! FlowSource<T>
+            let source = object as! Source<T>
             return source.addListener(action)
         }
         return nil
@@ -105,15 +76,16 @@ public class FlowDispatcher {
     
     /// Unsubscribe a listener.
     func unsubscribe(sourceName:String, uuid:NSUUID) {
-        let t = sources[sourceName] as! FlowListener
-        t.removeListener(uuid)
+        if let t = sources[sourceName] {
+            t.removeListener(uuid)
+        }
     }
     
     /**
      Register a data source
      */
-    func register(source:FlowItem) {
-        sources[source.name] = source;
+    func register(name:String, source:Item) {
+        sources[name] = source;
     }
     
     /**
@@ -123,10 +95,19 @@ public class FlowDispatcher {
         sources.removeValueForKey(name)
     }
     
-    func read<T:Comparable>(name:String) -> T?{
+    // helper function for sources
+    func read<T>(name:String) -> T?{
         if let object = sources[name] {
-            let source = object as! FlowSource<T>
+            let source = object as! Source<T>
             return source.read()
+        }
+        return nil
+    }
+    
+    func transact<T>(name:String, value:T) -> T? {
+        if let object = sources[name] {
+            let source = object as! Source<T>
+            return source.transact(name, value: value)
         }
         return nil
     }
