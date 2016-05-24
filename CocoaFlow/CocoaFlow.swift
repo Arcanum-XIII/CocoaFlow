@@ -46,17 +46,17 @@ class Source<T>:Item {
     /**
      Will add a closure listener that will be triggered on transaction
      
-     - returns: UUID of the closure
+     - parameter action: closure that will be triggered upon a change. Will receive the new value
+     - returns: closure to remove the listener
      */
-    func addListener(action:(T) -> Void) -> NSUUID {
+    func listen(action:(T) -> Void) -> () -> Void {
         let uuid = NSUUID()
         listeners[uuid] = action
-        return uuid
-    }
-    
-    /// remove a listener
-    override func removeListener(uuid:NSUUID) {
-        listeners.removeValueForKey(uuid)
+        return {
+            self.listeners.removeValueForKey(uuid)
+            return // needed because by default switch will return the value of the last statement
+        }
+        
     }
     
     func read() -> T { return self.readMethod() }
@@ -66,10 +66,10 @@ class Source<T>:Item {
 public class FlowDispatcher {
     var sources: Dictionary<String, Item> = Dictionary()
     
-    func subscribe<T:Comparable>(sourceName:String, action:(T) -> Void) -> NSUUID? {
+    func subscribe<T:Comparable>(sourceName:String, action:(T) -> Void) -> (() -> Void)? {
         if let object = sources[sourceName] {
             let source = object as! Source<T>
-            return source.addListener(action)
+            return source.listen(action)
         }
         return nil
     }
