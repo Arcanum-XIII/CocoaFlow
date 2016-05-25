@@ -19,41 +19,18 @@ class Item {
 /// sure that everyone is aware of change.
 /// T is the resulting value you get out of the source, P is the parameter type
 /// used to transact the source
-class Source<T, P>:Item {
-    internal let actions:(String, P) -> T?
-    internal let readMethod:() -> T
-    var listeners:[NSUUID:(T) -> Void] = [:]
+class Source<T:Equatable, P>:Item {
+    var state:T?
+    var previousState:[T?] = []
+    var actions:[String:(T?, [P]) -> T] = [:]
+    internal var listeners:[NSUUID:(T?) -> Void] = [:]
     
-    /// - parameter actionsList: dictionnary of action, action being defined as closure.
-    /// - parameter read: closure to get the current value of the Source
-    init(actionsList:[String:(P) -> T], read:() -> T) {
-        func evalAction(actionName:String, v:P) -> T? {
-            if let action = actionsList[actionName] {
-                return action(v)
-            }
-            return nil
-        }
-        self.actions = evalAction
-        self.readMethod = read
-        super.init()
+    init(state:T) {
+        self.state = state
+        self.previousState.append(state)
     }
     
-    /// a transaction will notify listener that a new value is there
-    func transact(name:String, value:P) -> T? {
-        let result = actions(name, value)
-        if let r = result {
-            for (_ ,listener) in listeners {
-                listener(r)
-            }
-        }
-        return result
-    }
-    
-     /// Will add a closure listener that will be triggered on transaction
-     ///
-     /// - parameter action: closure that will be triggered upon a change. Will receive the new value
-     /// - returns: closure to remove the listener
-    func addListener(action:(T) -> Void) -> () -> Void {
+    func addListener(action:(T?) -> Void) -> () -> Void {
         let uuid = NSUUID()
         listeners[uuid] = action
         return {
@@ -63,7 +40,23 @@ class Source<T, P>:Item {
         
     }
     
-    func read() -> T { return self.readMethod() }
+    /// Pure function that will act on the state.
+    internal func applyAction(name:String, state:T?, param:[P]) -> T? {
+        guard let a = actions[name]  else { return state }
+        return a(state, param)
+    }
+    
+    func transact(name:String = "", param:P...) -> T? {
+        let result = applyAction(name, state: self.state, param: param)
+        if (result != previousState.last!) {
+            previousState.append(result)
+            state = result
+            for (_ ,listener) in listeners {
+                listener(result)
+            }
+        }
+        return result
+    }
 }
 
 /// Create a basic dispatcher

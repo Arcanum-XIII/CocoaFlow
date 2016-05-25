@@ -12,19 +12,20 @@ func updateDictionary<K, T>(dict:Dictionary<K, T>, key:K, value:T) -> Dictionary
     return tmpDict
 }
 
+let testStore:Source<Int, Int> = Source(state: 0)
+testStore.actions["inc"] = ({ (state:Int?, _) -> Int in
+    guard let s = state else {return 0}
+    return s + 1
+})
+testStore.actions["dec"] = ({ (state:Int?, _) -> Int in
+    guard let s = state else {return 0}
+    return s - 1
+})
 
-// So, how to use a generic function a get back a value hidden in a container object ?
-let sources:[String:FlowItem] = ["test":FlowSource.init(name: "test", value: 3)]
-
-// with a function with the same generic parameter, you could assess the return Type based on the parameter passed on.
-func read<T>(name:String) -> T?{
-    if let object = sources[name] {
-        let source = object as! FlowSource<T>
-        return source.read()
-    }
-    return nil
+// listener example, check console !
+testStore.addListener { (v:Int?) in
+    print("Transaction occured : \(v)")
 }
 
-// solution is to assert the type in the receiver and be done with it. You still would have to know it beforehand to use it so... doesn't change a thing.
-let r:Int? = read("test")
-
+testStore.transact()
+testStore.transact("inc")
