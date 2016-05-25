@@ -24,9 +24,11 @@ class Source<T:Equatable, P>:Item {
     var previousState:[T?] = []
     var actions:[String:(T?, [P]) -> T] = [:]
     internal var listeners:[NSUUID:(T?) -> Void] = [:]
+    let keepState:Int
     
-    init(state:T) {
+    init(state:T, keepState:Int = 0) {
         self.state = state
+        self.keepState = keepState
         self.previousState.append(state)
     }
     
@@ -40,17 +42,26 @@ class Source<T:Equatable, P>:Item {
         
     }
     
-    /// Pure function that will act on the state.
+    /// Pure function that will apply action on the state.
     internal func applyAction(name:String, state:T?, param:[P]) -> T? {
         guard let a = actions[name]  else { return state }
         return a(state, param)
     }
     
+    /// Handle the magic behind the state keeping maintenance
+    internal func pushState(value:T?) -> Bool {
+        guard keepState == 0 || previousState.last! == value else {return false}
+        if(previousState.count > keepState) {
+            previousState.removeFirst()
+        }
+        previousState.append(value)
+        state = value
+        return true
+    }
+    
     func transact(name:String = "", param:P...) -> T? {
         let result = applyAction(name, state: self.state, param: param)
-        if (result != previousState.last!) {
-            previousState.append(result)
-            state = result
+        if (pushState(result)) {
             for (_ ,listener) in listeners {
                 listener(result)
             }
