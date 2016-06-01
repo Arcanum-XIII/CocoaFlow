@@ -11,6 +11,7 @@
 		9612E70D1CD9EB9000C9CE4D /* CocoaFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612E7021CD9EB9000C9CE4D /* CocoaFlow.framework */; };
 		9612E7121CD9EB9000C9CE4D /* CocoaFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612E7111CD9EB9000C9CE4D /* CocoaFlowTests.swift */; };
 		9612E71D1CD9EBD300C9CE4D /* CocoaFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9612E71C1CD9EBD300C9CE4D /* CocoaFlow.swift */; };
+		9690D7CA1CF840DF00ED2DEB /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9690D7C91CF840DF00ED2DEB /* LinkedList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		9612E7111CD9EB9000C9CE4D /* CocoaFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CocoaFlowTests.swift; sourceTree = "<group>"; };
 		9612E7131CD9EB9000C9CE4D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9612E71C1CD9EBD300C9CE4D /* CocoaFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaFlow.swift; sourceTree = "<group>"; };
+		9690D7C91CF840DF00ED2DEB /* LinkedList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LinkedList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				9612E71C1CD9EBD300C9CE4D /* CocoaFlow.swift */,
+				9690D7C91CF840DF00ED2DEB /* LinkedList.swift */,
 				9612E7051CD9EB9000C9CE4D /* CocoaFlow.h */,
 				9612E7071CD9EB9000C9CE4D /* Info.plist */,
 			);
@@ -197,6 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9690D7CA1CF840DF00ED2DEB /* LinkedList.swift in Sources */,
 				9612E71D1CD9EBD300C9CE4D /* CocoaFlow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
