@@ -2,9 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:MyPlayground.playground">
+      location = "container:CocoaFlow.xcodeproj">
    </FileRef>
    <FileRef
-      location = "container:CocoaFlow.xcodeproj">
+      location = "group:FlowDemo/FlowDemo.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:MyPlayground.playground">
    </FileRef>
 </Workspace>

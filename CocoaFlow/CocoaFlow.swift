@@ -10,7 +10,7 @@
 import Foundation
 
 // generic class can't be added directly to a dictionnary
-class Item {
+public class Item {
     
 }
 
@@ -19,20 +19,20 @@ class Item {
 /// sure that everyone is aware of change.
 /// T is the resulting value you get out of the source, P is the parameter type
 /// used to transact the source
-class Source<T:Equatable, P>:Item {
+public class Source<T:Equatable, P>:Item {
     var state:T?
     var previousState:[T?] = []
-    var actions:[String:(T?, [P]) -> T] = [:]
+    public var actions:[String:(T?, [P]) -> T] = [:]
     internal var listeners:[NSUUID:(T?) -> Void] = [:]
     let keepState:Int
     
-    init(state:T, keepState:Int = 0) {
+    public init(state:T, keepState:Int = 0) {
         self.state = state
         self.keepState = keepState
         self.previousState.append(state)
     }
     
-    func addListener(action:(T?) -> Void) -> () -> Void {
+    public func addListener(action:(T?) -> Void) -> () -> Void {
         let uuid = NSUUID()
         listeners[uuid] = action
         return {
@@ -59,7 +59,7 @@ class Source<T:Equatable, P>:Item {
         return true
     }
     
-    func transact(name:String = "", param:P...) -> T? {
+    public func transact(name:String = "", param:P...) -> T? {
         let result = applyAction(name, state: self.state, param: param)
         if (pushState(result)) {
             for (_ ,listener) in listeners {

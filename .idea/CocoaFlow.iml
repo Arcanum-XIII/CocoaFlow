@@ -4,9 +4,20 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/CocoaFlowTests/Info.plist" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CocoaFlowTests/CocoaFlowTests.swift" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/Base.lproj/LaunchScreen.storyboard" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/Base.lproj/Main.storyboard" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/Assets.xcassets" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/ViewController.swift" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/AppDelegate.swift" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/Info.plist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoTests/Info.plist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoTests/FlowDemoTests.swift" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoUITests/Info.plist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoUITests/FlowDemoUITests.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CocoaFlow/CocoaFlow.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CocoaFlow/CocoaFlow.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CocoaFlow/Info.plist" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CocoaFlow/LinkedList.swift" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
