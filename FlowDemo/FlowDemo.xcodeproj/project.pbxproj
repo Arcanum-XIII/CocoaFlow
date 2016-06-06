@@ -14,6 +14,7 @@
 		960F60541D018DA000F642BE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 960F60521D018DA000F642BE /* LaunchScreen.storyboard */; };
 		960F605F1D018DA000F642BE /* FlowDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960F605E1D018DA000F642BE /* FlowDemoTests.swift */; };
 		960F606A1D018DA000F642BE /* FlowDemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 960F60691D018DA000F642BE /* FlowDemoUITests.swift */; };
+		960F60781D05467F00F642BE /* CocoaFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 960F60771D05467F00F642BE /* CocoaFlow.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		960F60651D018DA000F642BE /* FlowDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		960F60691D018DA000F642BE /* FlowDemoUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDemoUITests.swift; sourceTree = "<group>"; };
 		960F606B1D018DA000F642BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		960F60771D05467F00F642BE /* CocoaFlow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaFlow.framework; path = "../../../../Library/Developer/Xcode/DerivedData/CocoaFlow-hdtdowaihbqlucebxvwrowztotrm/Build/Products/Debug-iphonesimulator/CocoaFlow.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				960F60781D05467F00F642BE /* CocoaFlow.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +83,7 @@
 				960F60481D018DA000F642BE /* FlowDemo */,
 				960F605D1D018DA000F642BE /* FlowDemoTests */,
 				960F60681D018DA000F642BE /* FlowDemoUITests */,
+				960F60791D05469200F642BE /* Framework */,
 				960F60471D018DA000F642BE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -123,6 +127,14 @@
 				960F606B1D018DA000F642BE /* Info.plist */,
 			);
 			path = FlowDemoUITests;
+			sourceTree = "<group>";
+		};
+		960F60791D05469200F642BE /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				960F60771D05467F00F642BE /* CocoaFlow.framework */,
+			);
+			name = Framework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

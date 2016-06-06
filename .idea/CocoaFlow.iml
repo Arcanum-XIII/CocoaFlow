@@ -10,8 +10,8 @@
       <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/ViewController.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/AppDelegate.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemo/Info.plist" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoTests/Info.plist" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoTests/FlowDemoTests.swift" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoTests/Info.plist" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoUITests/Info.plist" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/FlowDemo/FlowDemoUITests/FlowDemoUITests.swift" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CocoaFlow/CocoaFlow.swift" isTestSource="false" />
